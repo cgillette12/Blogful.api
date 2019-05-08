@@ -22,6 +22,11 @@ app.get('/articles', (req, res,next) => {
   const knexInstence = req.app.get('db');
   ArticlesService.getAllArticles(knexInstence)
     .then(articles => {
+      if(!articles){
+        return res.status(404).json({
+          error:{message:`Article doesn't exist`}
+        });
+      }
       res.json(articles);
     })
     .catch(next);
