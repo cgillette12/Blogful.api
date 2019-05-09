@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
-const ArticlesService = require('./articles-service');
+const articlesRouter = require('./articles/articles-router');
 
 
 const app = express();
@@ -18,20 +18,7 @@ app.use(morgan(morganOption));
 app.use(cors());
 app.use(helmet());
 
-app.get('/articles', (req, res,next) => {
-  const knexInstence = req.app.get('db');
-  ArticlesService.getAllArticles(knexInstence)
-    .then(articles => {
-      if(!articles){
-        return res.status(404).json({
-          error:{message:`Article doesn't exist`}
-        });
-      }
-      res.json(articles);
-    })
-    .catch(next);
-});
-
+app.use('/api/articles',articlesRouter);
 app.get('/', (req, res) => {
   res.send('Hello, world!');
 });
